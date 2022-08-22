@@ -1,7 +1,7 @@
 type Rule implements ChangeableEntity {
     added: ChangeData!
     modified: ChangeData!
-    enabled: Boolean!
+    allow: Boolean!
     reference: RuleReference!
     operation: Operation!
 }

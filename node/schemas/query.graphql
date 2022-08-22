@@ -1,3 +1,6 @@
 type Query {
-    
+    users(id: ID): [User!]!
+    groups(id: ID): [Group!]!
+    operations(id: ID): [Operation!]!
+    rules: [Rule!]!
 }

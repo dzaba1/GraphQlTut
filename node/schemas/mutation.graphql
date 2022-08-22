@@ -1,3 +1,12 @@
 type Mutation {
-    
+    addUser(name: String!): ID!
+    addGroup(name: String!): ID!
+    setPermissionForGroup(input: SetPermissionInput!): Rule!
+    setPermissionForUser(input: SetPermissionInput!): Rule!
+}
+
+input SetPermissionInput {
+    referenceId: ID!
+    operationId: ID!
+    allow: Boolean!
 }
