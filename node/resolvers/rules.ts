@@ -23,11 +23,11 @@ export class RuleViewModel {
     }
 
     public get added(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.rule.added, this.usersDal);
+        return new ChangeDataViewModel(this.rule.added, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
     }
 
     public get modified(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.rule.modified, this.usersDal);
+        return new ChangeDataViewModel(this.rule.modified, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
     }
 
     public get allow(): boolean {
@@ -38,13 +38,13 @@ export class RuleViewModel {
         const userRule = this.rule as RuleUser;
         if (userRule != null && userRule.userId != null) {
             const user = await this.usersDal.get(userRule.userId);
-            return new UserViewModel(user, this.usersDal);
+            return new UserViewModel(user, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
         }
 
         const groupRule = this.rule as RuleGroup;
         if (groupRule != null && groupRule.groupId != null) {
             const group = await this.groupsDal.get(groupRule.groupId);
-            return new GroupViewModel(group, this.usersDal);
+            return new GroupViewModel(group, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
         }
 
         throw new TypeError("Unknown rule type.");
