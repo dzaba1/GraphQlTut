@@ -89,3 +89,10 @@ export abstract class Repo<T extends Entity<TId>, TId> {
         this.entities.push(entity)
     }
 }
+
+export abstract class RepoWithNumberId<T extends Entity<number>> extends Repo<T, number> {
+    protected getNextId(): number {
+        const ids: number[] = this.entities.map(e => Number(e.id));
+        return Math.max(...ids) + 1;
+    }
+}

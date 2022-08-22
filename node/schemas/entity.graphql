@@ -15,5 +15,5 @@ interface EntityWithReference {
 
 type ChangeData {
     date: MyDate!
-    User: User!
+    user: User!
 }
