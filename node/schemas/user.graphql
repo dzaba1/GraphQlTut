@@ -1,9 +1,9 @@
-type User implements NamedEntity & ChangeableEntity {
+type User implements NamedEntity & ChangeableEntity & EntityWithReference {
     id: ID!
     name: String!
     added: ChangeData!
     modified: ChangeData!
-    directPermissions: [Permission!]!
-    affectedPermissions: [Permission!]!
+    rules: [Rule!]!
+    affectedPermissions: [Operation!]!
     membership: [Group!]!
 }

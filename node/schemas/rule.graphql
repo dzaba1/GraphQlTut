@@ -1,0 +1,9 @@
+type Rule implements ChangeableEntity {
+    added: ChangeData!
+    modified: ChangeData!
+    enabled: Boolean!
+    reference: RuleReference!
+    operation: Operation!
+}
+
+union RuleReference = User | Group

@@ -8,6 +8,11 @@ interface ChangeableEntity {
     modified: ChangeData!
 }
 
+interface EntityWithReference {
+    rules: [Rule!]!
+    affectedPermissions: [Operation!]!
+}
+
 type ChangeData {
     date: MyDate!
     User: User!

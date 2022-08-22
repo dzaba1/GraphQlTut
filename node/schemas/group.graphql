@@ -1,10 +1,10 @@
-type Group implements NamedEntity & ChangeableEntity {
+type Group implements NamedEntity & ChangeableEntity & EntityWithReference {
     id: ID!
     name: String!
     added: ChangeData!
     modified: ChangeData!
-    directPermissions: [Permission!]!
-    affectedPermissions: [Permission!]!
+    rules: [Rule!]!
+    affectedPermissions: [Operation!]!
     membership: [Group!]!
     members: [GroupMember!]!
 }
