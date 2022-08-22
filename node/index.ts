@@ -5,13 +5,20 @@ import { loadSchema } from '@graphql-tools/load';
 import { addResolversToSchema } from '@graphql-tools/schema';
 import { GraphQLSchema } from 'graphql';
 import { applyDirectives } from './directives/applyDirectives';
-import { resolvers } from './resolvers/resolvers';
+import { Resolvers, } from './resolvers/resolvers';
+import { RuleGroupsDal, RuleUsersDal } from "./dal/rulesDal";
+import { UsersDal } from "./dal/usersDal";
+import { OperationsDal } from "./dal/operationsDal";
+import { GroupsDal } from "./dal/groupsDal";
 
 async function buildSchema(): Promise<GraphQLSchema> {
   // Load schema from the file
   const schema = await loadSchema('./schemas/**/*.graphql', {
     loaders: [new GraphQLFileLoader()]
   });
+
+  const resolversObj = new Resolvers(new RuleGroupsDal(), new RuleUsersDal(), new UsersDal(), new OperationsDal(), new GroupsDal());
+  const resolvers = { ...resolversObj }
 
   const schemaWithResolvers = addResolversToSchema({
     schema,
