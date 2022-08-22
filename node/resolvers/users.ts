@@ -1,7 +1,7 @@
-import { UsersDal } from "../dal/users";
+import { UsersDal } from "../dal/usersDal";
 import { NamedEntity } from "../model/entity";
 import { User } from "../model/user";
-import { ChangeDataViewModel } from "./helper";
+import { ChangeDataViewModel } from "./helpers";
 
 export class UserViewModel implements NamedEntity<number> {
     constructor(private user: User,

@@ -1,9 +1,9 @@
 import { Mutex } from 'async-mutex';
 import { Entity } from '../model/entity'
 
-export abstract class Repo<T extends Entity<TId>, TId> {
-    protected entities: T[] = []
-    protected mutex = new Mutex()
+export abstract class RepoNoId<T> {
+    protected entities: T[] = [];
+    protected mutex = new Mutex();
 
     public abstract get EntityName(): string;
 
@@ -13,7 +13,9 @@ export abstract class Repo<T extends Entity<TId>, TId> {
             return this.entities;
         });
     }
+}
 
+export abstract class Repo<T extends Entity<TId>, TId> extends RepoNoId<T> {
     public async get(id: TId): Promise<T> {
         return await this.mutex.runExclusive(() => {
             console.log(`Getting a '${this.EntityName}' with ID '${id}'.`);

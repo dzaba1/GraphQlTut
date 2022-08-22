@@ -1,4 +1,4 @@
-import { UsersDal } from "../dal/users";
+import { UsersDal } from "../dal/usersDal";
 import { ChangeData } from "../model/entity";
 import { UserViewModel } from "./users";
 
