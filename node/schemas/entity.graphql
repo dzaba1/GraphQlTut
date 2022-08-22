@@ -1,0 +1,14 @@
+interface NamedEntity {
+    id: ID!
+    name: String!
+}
+
+interface ChangeableEntity {
+    added: ChangeData!
+    modified: ChangeData!
+}
+
+type ChangeData {
+    date: MyDate!
+    User: User!
+}

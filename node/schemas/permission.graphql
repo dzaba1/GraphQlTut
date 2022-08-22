@@ -1,0 +1,5 @@
+type Permission implements NamedEntity {
+    id: ID!
+    name: String!
+    references: [GroupMember!]!
+}
