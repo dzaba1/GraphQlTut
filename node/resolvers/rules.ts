@@ -10,7 +10,7 @@ import { UserViewModel } from "./users";
 
 export type RuleReference = GroupViewModel | UserViewModel;
 
-export class RuleViewModelBase {
+export class RuleViewModel {
     private _operation?: OperationViewModel;
 
     constructor(private rule: RuleBase,
