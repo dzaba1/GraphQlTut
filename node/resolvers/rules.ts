@@ -1,5 +1,6 @@
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
+import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
 import { UsersDal } from "../dal/usersDal";
 import { RuleBase, RuleGroup, RuleUser } from "../model/rule";
 import { GroupViewModel } from "./groups";
@@ -15,7 +16,9 @@ export class RuleViewModelBase {
     constructor(private rule: RuleBase,
         private usersDal: UsersDal,
         private operationsDal: OperationsDal,
-        private groupsDal: GroupsDal) {
+        private groupsDal: GroupsDal,
+        private ruleGroupsDal: RuleGroupsDal,
+        private ruleUsersDal: RuleUsersDal) {
 
     }
 
@@ -50,7 +53,7 @@ export class RuleViewModelBase {
     public async operation(): Promise<OperationViewModel> {
         if (this._operation == null) {
             const oper = await this.operationsDal.get(this.rule.operationId);
-            this._operation = new OperationViewModel(oper);
+            this._operation = new OperationViewModel(oper, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
         }
 
         return this._operation;

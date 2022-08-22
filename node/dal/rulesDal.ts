@@ -1,14 +1,30 @@
-import { RuleBase, RuleGroup, RuleUser } from "../model/rule";
+import { RuleGroup, RuleUser } from "../model/rule";
 import { RepoNoId } from "./repo";
 
-export abstract class RulesDalBase<T extends RuleBase> extends RepoNoId<T> {
+export class RuleGroupsDal extends RepoNoId<RuleGroup> {
+    public get EntityName(): string {
+        return "RuleGroup";
+    }
     
+    public async getByOperationId(operationId: number): Promise<RuleGroup[]> {
+        return await this.mutex.runExclusive(() => {
+            console.log(`Getting a '${this.EntityName}' with operation ID '${operationId}'.`);
+
+            return this.entities.filter(e => e.operationId == operationId);
+        });
+    }
 }
 
-export abstract class RuleGroupsDalBase extends RulesDalBase<RuleGroup> {
+export class RuleUsersDal extends RepoNoId<RuleUser> {
+    public get EntityName(): string {
+        return "RuleUser";
+    }
 
-}
+    public async getByOperationId(operationId: number): Promise<RuleUser[]> {
+        return await this.mutex.runExclusive(() => {
+            console.log(`Getting a '${this.EntityName}' with operation ID '${operationId}'.`);
 
-export abstract class RuleUsersDalBase extends RulesDalBase<RuleUser> {
-
+            return this.entities.filter(e => e.operationId == operationId);
+        });
+    }
 }
