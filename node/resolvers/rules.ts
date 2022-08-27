@@ -1,3 +1,4 @@
+import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
@@ -18,16 +19,18 @@ export class RuleViewModel {
         private operationsDal: OperationsDal,
         private groupsDal: GroupsDal,
         private ruleGroupsDal: RuleGroupsDal,
-        private ruleUsersDal: RuleUsersDal) {
+        private ruleUsersDal: RuleUsersDal,
+        private groupLinksDal: GroupLinksDal,
+        private userGroupLinksDal: UserGroupLinksDal) {
 
     }
 
     public get added(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.rule.added, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+        return new ChangeDataViewModel(this.rule.added, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
     }
 
     public get modified(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.rule.modified, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+        return new ChangeDataViewModel(this.rule.modified, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
     }
 
     public get allow(): boolean {
@@ -38,13 +41,13 @@ export class RuleViewModel {
         const userRule = this.rule as RuleUser;
         if (userRule != null && userRule.userId != null) {
             const user = await this.usersDal.get(userRule.userId);
-            return new UserViewModel(user, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+            return new UserViewModel(user, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
         }
 
         const groupRule = this.rule as RuleGroup;
         if (groupRule != null && groupRule.groupId != null) {
             const group = await this.groupsDal.get(groupRule.groupId);
-            return new GroupViewModel(group, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+            return new GroupViewModel(group, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
         }
 
         throw new TypeError("Unknown rule type.");
@@ -53,7 +56,7 @@ export class RuleViewModel {
     public async operation(): Promise<OperationViewModel> {
         if (this._operation == null) {
             const oper = await this.operationsDal.get(this.rule.operationId);
-            this._operation = new OperationViewModel(oper, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+            this._operation = new OperationViewModel(oper, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
         }
 
         return this._operation;

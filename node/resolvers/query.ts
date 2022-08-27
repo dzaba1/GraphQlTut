@@ -1,3 +1,4 @@
+import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
@@ -11,7 +12,9 @@ export class Query {
         private ruleUsersDal: RuleUsersDal,
         private usersDal: UsersDal,
         private operationsDal: OperationsDal,
-        private groupsDal: GroupsDal) {
+        private groupsDal: GroupsDal,
+        private groupLinksDal: GroupLinksDal,
+        private userGroupLinksDal: UserGroupLinksDal) {
 
     }
 
@@ -19,11 +22,11 @@ export class Query {
         const id = params.id;
         if (id != null) {
             const oper = await this.operationsDal.get(Number(id));
-            return [new OperationViewModel(oper, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal)];
+            return [new OperationViewModel(oper, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal)];
         }
 
         const all = await this.operationsDal.getAll();
-        return all.map(o => new OperationViewModel(o, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal));
+        return all.map(o => new OperationViewModel(o, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal));
     }
 
     public async rules(): Promise<RuleViewModel[]> {
@@ -31,6 +34,6 @@ export class Query {
         const users: RuleBase[] = await this.ruleUsersDal.getAll();
         const all = groups.concat(users);
 
-        return all.map(r => new RuleViewModel(r, this.usersDal, this.operationsDal, this.groupsDal, this.ruleGroupsDal, this.ruleUsersDal));
+        return all.map(r => new RuleViewModel(r, this.usersDal, this.operationsDal, this.groupsDal, this.ruleGroupsDal, this.ruleUsersDal, this.groupLinksDal, this.userGroupLinksDal));
     }
 }

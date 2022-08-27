@@ -10,6 +10,7 @@ import { RuleGroupsDal, RuleUsersDal } from "./dal/rulesDal";
 import { UsersDal } from "./dal/usersDal";
 import { OperationsDal } from "./dal/operationsDal";
 import { GroupsDal } from "./dal/groupsDal";
+import { GroupLinksDal, UserGroupLinksDal } from "./dal/groupLinksDal";
 
 async function buildSchema(): Promise<GraphQLSchema> {
   // Load schema from the file
@@ -17,7 +18,7 @@ async function buildSchema(): Promise<GraphQLSchema> {
     loaders: [new GraphQLFileLoader()]
   });
 
-  const resolversObj = new Resolvers(new RuleGroupsDal(), new RuleUsersDal(), new UsersDal(), new OperationsDal(), new GroupsDal());
+  const resolversObj = initResolvers();
   const resolvers = { ...resolversObj }
 
   const schemaWithResolvers = addResolversToSchema({
@@ -43,6 +44,14 @@ async function run(): Promise<void> {
   const schema = await buildSchema();
 
   startServer(schema);
+}
+
+function initResolvers(): Resolvers {
+  const groupsDal = new GroupsDal();
+  const usersDal = new UsersDal();
+  const groupLinksDal = new GroupLinksDal(groupsDal);
+  const userGroupLinksDal = new UserGroupLinksDal(usersDal, groupsDal);
+  return new Resolvers(new RuleGroupsDal(), new RuleUsersDal(), usersDal, new OperationsDal(), groupsDal, groupLinksDal, userGroupLinksDal);
 }
 
 await run();

@@ -1,3 +1,4 @@
+import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
@@ -11,11 +12,13 @@ export class Resolvers {
     private ruleUsersDal: RuleUsersDal,
     private usersDal: UsersDal,
     private operationsDal: OperationsDal,
-    private groupsDal: GroupsDal) {
+    private groupsDal: GroupsDal,
+    private groupLinksDal: GroupLinksDal,
+    private userGroupLinksDal: UserGroupLinksDal) {
 
   }
 
-  public Query = new Query(this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+  public Query = new Query(this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
 
   public Mutation = Mutation;
 

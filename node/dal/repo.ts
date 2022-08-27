@@ -20,7 +20,7 @@ export abstract class Repo<T extends Entity<TId>, TId> extends RepoNoId<T> {
         return await this.mutex.runExclusive(() => {
             console.log(`Getting a '${this.EntityName}' with ID '${id}'.`);
 
-            const res = this.entities.find(e => e.id == id);
+            const res = this.entities.find(e => e.id === id);
             if (res == null) {
                 throw new Error(`Can't find entity with ID ${id}}`);
             }

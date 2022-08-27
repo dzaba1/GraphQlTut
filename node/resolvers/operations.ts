@@ -1,3 +1,4 @@
+import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
@@ -13,7 +14,9 @@ export class OperationViewModel implements NamedEntity<number> {
         private ruleUsersDal: RuleUsersDal,
         private usersDal: UsersDal,
         private operationsDal: OperationsDal,
-        private groupsDal: GroupsDal) {
+        private groupsDal: GroupsDal,
+        private groupLinksDal: GroupLinksDal,
+        private userGroupLinksDal: UserGroupLinksDal) {
 
     }
 
@@ -30,6 +33,6 @@ export class OperationViewModel implements NamedEntity<number> {
         const users: RuleBase[] = await this.ruleUsersDal.getByOperationId(this.id);
         const all = groups.concat(users);
 
-        return all.map(r => new RuleViewModel(r, this.usersDal, this.operationsDal, this.groupsDal, this.ruleGroupsDal, this.ruleUsersDal));
+        return all.map(r => new RuleViewModel(r, this.usersDal, this.operationsDal, this.groupsDal, this.ruleGroupsDal, this.ruleUsersDal, this.groupLinksDal, this.userGroupLinksDal));
     }
 }

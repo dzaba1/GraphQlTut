@@ -1,3 +1,4 @@
+import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { GroupsDal } from "../dal/groupsDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
@@ -11,7 +12,9 @@ export class ChangeDataViewModel {
         private ruleUsersDal: RuleUsersDal,
         private usersDal: UsersDal,
         private operationsDal: OperationsDal,
-        private groupsDal: GroupsDal) {
+        private groupsDal: GroupsDal,
+        private groupLinksDal: GroupLinksDal,
+        private userGroupLinksDal: UserGroupLinksDal) {
 
     }
 
@@ -21,6 +24,6 @@ export class ChangeDataViewModel {
 
     public async user(): Promise<UserViewModel> {
         const user = await this.usersDal.get(this.data.userId);
-        return new UserViewModel(user, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal);
+        return new UserViewModel(user, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
     }
 }
