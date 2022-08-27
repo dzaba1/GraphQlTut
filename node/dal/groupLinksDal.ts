@@ -15,9 +15,9 @@ export class UserGroupLinksDal extends RepoNoId<GroupLinkBase> {
         return "UserGroupLinks";
     }
 
-    public async getMembers(parentId: number): Promise<User[]> {
+    public async getMembers(groupId: number): Promise<User[]> {
         const links = await this.mutex.runExclusive(() => {
-            return this.entities.filter(l => l.groupId === parentId);
+            return this.entities.filter(l => l.groupId === groupId);
         });
 
         const result: User[] = [];
