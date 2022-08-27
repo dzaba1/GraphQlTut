@@ -1,11 +1,8 @@
-import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
-import { GroupsDal } from "../dal/groupsDal";
-import { OperationsDal } from "../dal/operationsDal";
-import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
-import { UsersDal } from "../dal/usersDal";
 import { NamedEntity } from "../model/entity";
 import { Group } from "../model/group";
+import { DependenciesFacade } from "./dependenciesFacade";
 import { ChangeDataViewModel } from "./helpers";
+import { OperationViewModel } from "./operations";
 import { RuleViewModel } from "./rules";
 import { UserViewModel } from "./users";
 
@@ -13,13 +10,7 @@ export type GroupMember = GroupViewModel | UserViewModel;
 
 export class GroupViewModel implements NamedEntity<number> {
     constructor(private group: Group,
-        private ruleGroupsDal: RuleGroupsDal,
-        private ruleUsersDal: RuleUsersDal,
-        private usersDal: UsersDal,
-        private operationsDal: OperationsDal,
-        private groupsDal: GroupsDal,
-        private groupLinksDal: GroupLinksDal,
-        private userGroupLinksDal: UserGroupLinksDal) {
+        private dependencies: DependenciesFacade) {
 
     }
 
@@ -32,34 +23,39 @@ export class GroupViewModel implements NamedEntity<number> {
     }
 
     public get added(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.group.added, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
+        return new ChangeDataViewModel(this.group.added, this.dependencies);
     }
 
     public get modified(): ChangeDataViewModel {
-        return new ChangeDataViewModel(this.group.modified, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal);
+        return new ChangeDataViewModel(this.group.modified, this.dependencies);
     }
 
     public async rules(): Promise<RuleViewModel[]> {
-        const all = await this.ruleGroupsDal.getByGroupId(this.id);
-        return all.map(r => new RuleViewModel(r, this.usersDal, this.operationsDal, this.groupsDal, this.ruleGroupsDal, this.ruleUsersDal, this.groupLinksDal, this.userGroupLinksDal));
+        const all = await this.dependencies.RuleGroupsDal.getByGroupId(this.id);
+        return all.map(r => new RuleViewModel(r, this.dependencies));
     }
 
     public async membership(): Promise<GroupViewModel[]> {
-        const parents = await this.groupLinksDal.getMembership(this.group.id!);
-        return parents.map(g => new GroupViewModel(g, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal));
+        const parents = await this.dependencies.GroupLinksDal.getMembership(this.group.id!);
+        return parents.map(g => new GroupViewModel(g, this.dependencies));
     }
 
     public async members(): Promise<GroupMember[]> {
-        const groupMembers = await this.groupLinksDal.getMembers(this.group.id!);
-        const groupVms = groupMembers.map(g => new GroupViewModel(g, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal));
+        const groupMembers = await this.dependencies.GroupLinksDal.getMembers(this.group.id!);
+        const groupVms = groupMembers.map(g => new GroupViewModel(g, this.dependencies));
 
-        const userMembers = await this.userGroupLinksDal.getMembers(this.group.id!);
-        const userVms = userMembers.map(u => new UserViewModel(u, this.ruleGroupsDal, this.ruleUsersDal, this.usersDal, this.operationsDal, this.groupsDal, this.groupLinksDal, this.userGroupLinksDal));
+        const userMembers = await this.dependencies.UserGroupLinksDal.getMembers(this.group.id!);
+        const userVms = userMembers.map(u => new UserViewModel(u, this.dependencies));
 
         const result: GroupMember[] = [];
         result.push(...groupVms);
         result.push(...userVms);
 
         return result;
+    }
+
+    public async affectedPermissions(): Promise<OperationViewModel[]> {
+        const operations = await this.dependencies.PermissionCalculator.resolveForGroup(this.group.id!);
+        return operations.map(o => new OperationViewModel(o, this.dependencies));
     }
 }

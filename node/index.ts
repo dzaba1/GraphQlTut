@@ -11,6 +11,8 @@ import { UsersDal } from "./dal/usersDal";
 import { OperationsDal } from "./dal/operationsDal";
 import { GroupsDal } from "./dal/groupsDal";
 import { GroupLinksDal, UserGroupLinksDal } from "./dal/groupLinksDal";
+import { DependenciesFacade } from "./resolvers/dependenciesFacade";
+import { PermissionCalculator } from "./services/permissionCalculator";
 
 async function buildSchema(): Promise<GraphQLSchema> {
   // Load schema from the file
@@ -49,9 +51,14 @@ async function run(): Promise<void> {
 function initResolvers(): Resolvers {
   const groupsDal = new GroupsDal();
   const usersDal = new UsersDal();
+  const ruleGroupsDal = new RuleGroupsDal();
+  const operationsDal = new OperationsDal();
+  const ruleUsersDal = new RuleUsersDal();
   const groupLinksDal = new GroupLinksDal(groupsDal);
   const userGroupLinksDal = new UserGroupLinksDal(usersDal, groupsDal);
-  return new Resolvers(new RuleGroupsDal(), new RuleUsersDal(), usersDal, new OperationsDal(), groupsDal, groupLinksDal, userGroupLinksDal);
+  const permissionCalculator = new PermissionCalculator(userGroupLinksDal, ruleGroupsDal, groupLinksDal, operationsDal, ruleUsersDal)
+  const deps = new DependenciesFacade(ruleGroupsDal, ruleUsersDal, usersDal, operationsDal, groupsDal, groupLinksDal, userGroupLinksDal, permissionCalculator)
+  return new Resolvers(deps);
 }
 
 await run();

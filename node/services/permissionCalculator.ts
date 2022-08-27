@@ -2,7 +2,7 @@ import { GroupLinksDal, UserGroupLinksDal } from "../dal/groupLinksDal";
 import { OperationsDal } from "../dal/operationsDal";
 import { RuleGroupsDal, RuleUsersDal } from "../dal/rulesDal";
 import { Operation } from "../model/operation";
-import { RuleBase, RuleGroup } from "../model/rule";
+import { RuleBase } from "../model/rule";
 
 export class PermissionCalculator {
     constructor(private userGroupLinksDal: UserGroupLinksDal,
